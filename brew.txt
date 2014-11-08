@@ -1,0 +1,7 @@
+android-ndk		freetype		jpeg			libusb			mysql			phpmyadmin		ruby			winetricks
+android-sdk		gd			libgphoto2		libusb-compat		nginx			pkg-config		sane-backends		xz
+ant			gdbm			libicns			libyaml			opencv			pyenv			scala			zlib
+autoconf		gettext			libmpc			little-cms2		openssl			pyenv-virtualenv	sqlite
+cabextract		gmp			libpng			maven			pcre			python			subversion
+cloog			isl			libtiff			mcrypt			php54			python3			unixodbc
+cmake			jasper			libtool			mpfr			php54-mcrypt		readline		wine
