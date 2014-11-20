@@ -1,11 +1,14 @@
 
 temporaryFile <- tempfile() # Create a new temp file
 
-getDf <- function(path.name) {
-  	read.csv(path.name)
+getDf <- function(path.name, file.name, column.types, destination.file) {
+  	download.file(paste(path.name, file.name, sep=""), destfile=destination.file, method="curl")
+  	read.csv(destination.file, colClasses=column.types)
 }
 
-
+Repository.path <- "https://raw.githubusercontent.com/miratepuffin/SinkingShipSolutionsIncorperated/master/"
+train.raw <- "cheatTrain.csv?token=AGW2CwT6uIz3wbVvSLwRdd-KV01JW-E6ks5UZ9FzwA%3D%3D"
+test.raw <- "test.csv?token=AGW2CyMnCpON__L56bqregRlxPFB838eks5UZ9JIwA%3D%3D"
 
 train.column.types <- c(
 	'integer',   # PassengerId
@@ -24,13 +27,13 @@ train.column.types <- c(
 
 test.column.types <- train.column.types[-2]     # no Survived column in test.csv
 
-df.train <- read.csv("cheatTrain.csv")
-df.test <- read.csv("test.csv")
+df.train <- getDf(Repository.path, train.raw, train.column.types, dest=temporaryFile)
+df.test <- getDf(Repository.path, test.raw, test.column.types, dest=temporaryFile)
 
 
 # 	There are better ways to impute data, we will let the Hmisc library do this
 df.train$Age[is.na(df.train$Age)] <- median(df.train$Age, na.rm=TRUE)
-
+df.train
 cabin_to_deck <- function(data) {
 	data = as.character(data)
 	for(i in seq(along=data)) {
@@ -40,7 +43,6 @@ cabin_to_deck <- function(data) {
 	}
 	return (as.factor(data))
 }
-
 
 #	summary(df.train$Embarked)
 df.train$Embarked[which(is.na(df.train$Embarked))] <- 'S'
@@ -89,7 +91,6 @@ model.prediction = predict(model.fit, newdata=df.test, type='response')
 #	)
 
 #	df.test$Survived <- model.prediction
-df.test$Survived <- round(model.prediction)
-
+df.test$Survived <- round(predict(model.fit, newdata=df.test, type='response'))
 # Write submission file
 write.csv(df.test[,c("PassengerId", "Survived")], file="pred.csv", row.names=FALSE, quote=FALSE)
